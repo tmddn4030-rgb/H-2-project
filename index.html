@@ -1,394 +1,177 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>블루 수소 CCUS 통합 대시보드</title>
-<style>
-:root {
---primary: #0f172a;
---secondary: #3b82f6;
---bg-color: #f8fafc;
---box-bg: #ffffff;
---border: #e2e8f0;
---text-main: #1e293b;
---text-sub: #64748b;
-}
-
-body {
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-background-color: var(--bg-color);
-color: var(--text-main);
-margin: 0;
-padding: 20px;
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-
-h1 { color: var(--primary); margin-bottom: 5px; font-size: 1.5rem; text-align: center; }
-.subtitle { color: var(--text-sub); margin-bottom: 20px; font-weight: 500; text-align: center; font-size: 0.9rem; }
-
-.container { display: flex; gap: 20px; max-width: 1200px; width: 100%; }
-
-/* 왼쪽 패널: 탭 및 리스트 */
-.sidebar {
-flex: 1;
-background: var(--box-bg);
-border: 1px solid var(--border);
-border-radius: 12px;
-padding: 15px;
-box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-display: flex;
-flex-direction: column;
-}
-
-.tabs {
-display: flex;
-gap: 10px;
-margin-bottom: 15px;
-}
-
-.tab-btn {
-flex: 1;
-padding: 10px;
-border: none;
-border-radius: 8px;
-cursor: pointer;
-background: #e2e8f0;
-font-weight: bold;
-color: var(--text-sub);
-transition: 0.2s;
-}
-
-.tab-btn.active {
-background: var(--primary);
-color: white;
-}
-
-.list-container {
-max-height: 70vh;
-overflow-y: auto;
-}
-
-.item-btn {
-width: 100%;
-padding: 12px;
-margin-bottom: 8px;
-background-color: #f1f5f9;
-border: 1px solid var(--border);
-border-radius: 8px;
-text-align: left;
-font-size: 0.9rem;
-font-weight: 600;
-color: var(--text-main);
-cursor: pointer;
-transition: all 0.2s;
-}
-
-.item-btn.active {
-background-color: var(--secondary);
-color: white;
-border-color: var(--secondary);
-}
-
-/* 오른쪽 패널: 데이터 표시 화면 */
-.content { flex: 2; }
-.card {
-background: var(--box-bg);
-border: 1px solid var(--border);
-border-radius: 12px;
-padding: 20px;
-box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-margin-bottom: 20px;
-}
-
-.card-title {
-font-size: 1.3rem;
-font-weight: bold;
-color: var(--primary);
-margin-top: 0;
-margin-bottom: 20px;
-border-bottom: 2px solid var(--border);
-padding-bottom: 10px;
-}
-
-/* 스트림 전용 스타일 */
-.prop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-.prop-item { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
-.prop-label { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 5px; }
-.prop-value { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-.prop-unit { font-size: 0.8rem; color: var(--text-sub); font-weight: normal; }
-
-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
-th { background-color: #f1f5f9; font-weight: 600; }
-.zero-val { color: #cbd5e1; }
-.highlight-val { color: #10b981; font-weight: bold; }
-
-/* 공정 전용 스타일 */
-.process-info-box {
-background: #f8fafc;
-border-left: 4px solid var(--secondary);
-padding: 15px;
-margin-bottom: 15px;
-border-radius: 0 8px 8px 0;
-}
-.process-info-box h3 { margin-top: 0; margin-bottom: 10px; font-size: 1rem; color: var(--primary); }
-.process-info-box p { margin: 0; line-height: 1.6; font-size: 0.95rem; }
-.equation { font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #b91c1c; background: #fee2e2; padding: 2px 6px; border-radius: 4px;}
-
-@media (max-width: 800px) {
-.container { flex-direction: column; }
-.list-container { max-height: 200px; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블루 수소 CCUS 통합 대시보드</title>
+    <style>
+        :root {
+            --primary: #0f172a; --secondary: #3b82f6; --bg-color: #f8fafc;
+            --box-bg: #ffffff; --border: #e2e8f0; --text-main: #1e293b; --text-sub: #64748b;
+        }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: var(--primary); font-size: 1.5rem; margin-bottom: 5px; text-align: center; }
+        .subtitle { color: var(--text-sub); font-size: 0.9rem; margin-bottom: 20px; text-align: center; }
+        .container { display: flex; gap: 20px; max-width: 1200px; width: 100%; }
+        .sidebar { flex: 1; background: var(--box-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: fit-content; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; background: #e2e8f0; font-weight: bold; color: var(--text-sub); }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .list-container { max-height: 65vh; overflow-y: auto; padding-right: 5px; }
+        .item-btn { width: 100%; padding: 12px; margin-bottom: 8px; background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px; text-align: left; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .item-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); }
+        .content { flex: 2; }
+        .card { background: var(--box-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .prop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .prop-item { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .prop-label { font-size: 0.75rem; color: var(--text-sub); margin-bottom: 4px; }
+        .prop-value { font-size: 1.1rem; font-weight: bold; color: var(--primary); }
+        .prop-unit { font-size: 0.8rem; color: var(--text-sub); font-weight: normal; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #f1f5f9; }
+        .zero-val { color: #cbd5e1; }
+        .highlight-val { color: #10b981; font-weight: bold; }
+        .process-info-box { background: #f8fafc; border-left: 4px solid var(--secondary); padding: 15px; margin-bottom: 15px; border-radius: 0 8px 8px 0; }
+        .process-info-box h3 { margin: 0 0 8px 0; font-size: 0.95rem; color: var(--primary); }
+        .process-info-box p { margin: 0; line-height: 1.5; font-size: 0.9rem; }
+        .equation { font-family: monospace; font-weight: bold; color: #b91c1c; background: #fee2e2; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px;}
+        @media (max-width: 800px) { .container { flex-direction: column; } .list-container { max-height: 250px; } }
+    </style>
 </head>
 <body>
-
-<h1>블루 수소 CCUS 통합 대시보드</h1>
-<div class="subtitle">114,156 kg/hr 수소 생산 시뮬레이션 및 12대 핵심 공정</div>
-
-<div class="container">
-<div class="sidebar">
-<div class="tabs">
-<button class="tab-btn active" id="btn-tab-stream" onclick="switchTab('stream')">스트림 보기</button>
-<button class="tab-btn" id="btn-tab-process" onclick="switchTab('process')">공정 보기</button>
-</div>
-<div class="list-container" id="list-container">
-</div>
-</div>
-
-<div class="content">
-<div class="card" id="view-stream">
-<div class="card-title" id="stream-title">스트림을 선택하세요</div>
-<div class="prop-grid">
-<div class="prop-item"><div class="prop-label">온도</div><div class="prop-value" id="val-temp">- <span class="prop-unit">°C</span></div></div>
-<div class="prop-item"><div class="prop-label">압력</div><div class="prop-value" id="val-press">- <span class="prop-unit">MPa</span></div></div>
-<div class="prop-item"><div class="prop-label">질량 유량</div><div class="prop-value" id="val-mass">- <span class="prop-unit">kg/hr</span></div></div>
-<div class="prop-item"><div class="prop-label">엔탈피</div><div class="prop-value" id="val-enth">- <span class="prop-unit">GJ/hr</span></div></div>
-</div>
-<div class="card-title" style="font-size:1rem; margin-top:20px; border:none; padding:0;">몰분율 (Mole Fraction)</div>
-<table>
-<thead><tr><th>Component</th><th>Formula</th><th>Mole Fraction</th></tr></thead>
-<tbody id="mole-table-body"></tbody>
-</table>
-</div>
-
-<div class="card" id="view-process" style="display: none;">
-<div class="card-title" id="process-title">공정을 선택하세요</div>
-
-<div class="process-info-box">
-<h3>📝 공정 설명 (Description)</h3>
-<p id="proc-desc"></p>
-</div>
-
-<div class="process-info-box">
-<h3>🧪 화학 반응식 (Chemical Equation)</h3>
-<p id="proc-chem" style="line-height: 2;"></p>
-</div>
-
-<div class="process-info-box">
-<h3>⚡ 에너지 보존식 (Energy Conservation)</h3>
-<p id="proc-energy" class="equation"></p>
-</div>
-</div>
-</div>
-</div>
-
-<script>
-// --- 1. 스트림 데이터베이스 ---
-const streamData = {
-1: { name: "Air Intake", temp: 15.0, press: 0.10, mass: 3372375, enth: -329.08, mols: {"Ar":0.0092, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0.0003, "H2":0, "H2O":0.0099, "N2":0.7732, "O2":0.2074, "SO2":0} },
-2: { name: "Compressed Air", temp: 24.0, press: 0.11, mass: 3372375, enth: -296.84, mols: {"Ar":0.0092, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0.0003, "H2":0, "H2O":0.0099, "N2":0.7732, "O2":0.2074, "SO2":0} },
-3: { name: "NG Feed", temp: 15.0, press: 3.10, mass: 428103, enth: -1933.32, mols: {"Ar":0, "CH4":0.9310, "CH4S":0, "C2H6":0.0320, "C3H8":0.0070, "C4H10":0.0040, "CO":0, "CO2":0.0100, "H2":0, "H2O":0, "N2":0.0160, "O2":0, "SO2":0} },
-4: { name: "NG to SMR", temp: 15.0, press: 3.10, mass: 362367, enth: -1636.45, mols: {"Ar":0, "CH4":0.9310, "CH4S":0, "C2H6":0.0320, "C3H8":0.0070, "C4H10":0.0040, "CO":0, "CO2":0.0100, "H2":0, "H2O":0, "N2":0.0160, "O2":0, "SO2":0} },
-5: { name: "Desulfurized NG", temp: 370.0, press: 3.00, mass: 362361, enth: -1282.84, mols: {"Ar":0, "CH4":0.9310, "CH4S":0, "C2H6":0.0320, "C3H8":0.0070, "C4H10":0.0040, "CO":0, "CO2":0.0100, "H2":0, "H2O":0, "N2":0.0160, "O2":0, "SO2":0} },
-6: { name: "Process Steam", temp: 399.0, press: 3.10, mass: 1004488, enth: -12811.13, mols: {"Ar":0, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0, "H2":0, "H2O":1.0000, "N2":0, "O2":0, "SO2":0} },
-7: { name: "Pre-Reformer Exit", temp: 395.0, press: 2.90, mass: 1366849, enth: -13917.51, mols: {"Ar":0, "CH4":0.2583, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0.0001, "CO2":0.0174, "H2":0.0440, "H2O":0.6760, "N2":0.0042, "O2":0, "SO2":0} },
-8: { name: "SMR Exit", temp: 871.0, press: 2.83, mass: 1366849, enth: -8520.76, mols: {"Ar":0, "CH4":0.0411, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0.1432, "CO2":0.0124, "H2":0.4609, "H2O":0.3393, "N2":0.0030, "O2":0, "SO2":0} },
-9: { name: "WGS Exit", temp: 204.0, press: 2.80, mass: 1366849, enth: -11116.95, mols: {"Ar":0, "CH4":0.0411, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0.1432, "CO2":0.0124, "H2":0.4609, "H2O":0.3393, "N2":0.0030, "O2":0, "SO2":0} },
-10: { name: "Cooled Syngas", temp: 38.0, press: 2.45, mass: 1366849, enth: -13307.00, mols: {"Ar":0, "CH4":0.0411, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0.0040, "CO2":0.1517, "H2":0.6001, "H2O":0.2000, "N2":0.0030, "O2":0, "SO2":0} },
-11: { name: "Dry Syngas", temp: 38.0, press: 2.35, mass: 265749, enth: -691.33, mols: {"Ar":0, "CH4":0.0627, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0.0061, "CO2":0.0116, "H2":0.9150, "H2O":0, "N2":0.0046, "O2":0, "SO2":0} },
-12: { name: "PSA H2 Exit", temp: 38.0, press: 2.28, mass: 114156, enth: 21.55, mols: {"Ar":0, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0, "H2":0.9998, "H2O":0, "N2":0.0002, "O2":0, "SO2":0} },
-13: { name: "Product H2", temp: 30.0, press: 6.48, mass: 114156, enth: 10.40, mols: {"Ar":0, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0, "H2":0.9998, "H2O":0, "N2":0.0002, "O2":0, "SO2":0} },
-14: { name: "PSA Tailgas", temp: 38.0, press: 0.14, mass: 151593, enth: -712.32, mols: {"Ar":0, "CH4":0.2824, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0.0274, "CO2":0.0521, "H2":0.6180, "H2O":0, "N2":0.0201, "O2":0, "SO2":0} },
-15: { name: "Burner Fuel", temp: 15.0, press: 3.10, mass: 65731, enth: -296.84, mols: {"Ar":0, "CH4":0.9310, "CH4S":0, "C2H6":0.0320, "C3H8":0.0070, "C4H10":0.0040, "CO":0, "CO2":0.0100, "H2":0, "H2O":0, "N2":0.0160, "O2":0, "SO2":0} },
-16: { name: "Combustion Gas", temp: 29.0, press: 0.14, mass: 217325, enth: -1009.16, mols: {"Ar":0, "CH4":0.4059, "CH4S":0, "C2H6":0.0061, "C3H8":0.0013, "C4H10":0.0008, "CO":0.0222, "CO2":0.0441, "H2":0.5003, "H2O":0, "N2":0.0193, "O2":0, "SO2":0} },
-17: { name: "Flue Gas", temp: 121.0, press: 0.10, mass: 3589700, enth: -10210.51, mols: {"Ar":0.0082, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0.0746, "H2":0, "H2O":0.2114, "N2":0.6890, "O2":0.0167, "SO2":0} },
-18: { name: "Captured CO2 (Process)", temp: 30.0, press: 0.20, mass: 391942, enth: -3515.56, mols: {"Ar":0, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0.9835, "H2":0, "H2O":0.0165, "N2":0, "O2":0, "SO2":0} },
-19: { name: "Captured CO2 (Flue)", temp: 49.0, press: 0.14, mass: 710065, enth: -6370.74, mols: {"Ar":0, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0.9728, "H2":0.0002, "H2O":0.0270, "N2":0, "O2":0, "SO2":0} },
-20: { name: "Total CO2 Compressed", temp: 30.0, press: 15.27, mass: 1091433, enth: -10035.35, mols: {"Ar":0, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0.9995, "H2":0, "H2O":0.0005, "N2":0, "O2":0, "SO2":0} },
-21: { name: "Vent Gas", temp: 30.0, press: 0.10, mass: 2762399, enth: -1224.32, mols: {"Ar":0.0110, "CH4":0, "CH4S":0, "C2H6":0, "C3H8":0, "C4H10":0, "CO":0, "CO2":0.0100, "H2":0, "H2O":0.0358, "N2":0.9209, "O2":0.0224, "SO2":0} }
-};
-
-// --- 2. 12개 공정 데이터베이스 ---
-const processData = {
-1: {
-name: "공기 압축 (Air Compression)",
-desc: "메인 개질기 버너의 연소에 필요한 공기를 외부에서 도입하여 반응 압력으로 승압시킵니다.",
-chem: "<span style='color:#64748b;'>없음 (물리적 압축)</span>",
-energy: "ṁ₁h₁ + W<sub>air_comp</sub> = ṁ₂h₂ + Q<sub>loss</sub>"
-},
-2: {
-name: "원료 탈황 (Feedstock Desulfurization)",
-desc: "개질기 촉매의 독성을 방지하기 위해 천연가스 내 황 화합물(H₂S, COS 등)을 수첨 및 흡착하여 제거합니다.",
-chem: "<b>1. 수첨 전환:</b> R-S + H<sub>2</sub> → RH + H<sub>2</sub>S<br><b>2. 흡착 제거:</b> H<sub>2</sub>S + ZnO → ZnS + H<sub>2</sub>O",
-energy: "H<sub>NG</sub> + H<sub>H2_recycle</sub> = H<sub>desulfurized_NG</sub> + ΔH<sub>rxn</sub> + Q<sub>loss</sub>"
-},
-3: {
-name: "예비 개질 (Pre-reforming)",
-desc: "메인 개질기 진입 전, 낮은 온도에서 탄소수가 2개 이상인 중질 탄화수소를 메탄과 수소로 먼저 분해하여 탄소 침착(Coking)을 방지합니다.",
-chem: "C<sub>n</sub>H<sub>m</sub> + nH<sub>2</sub>O → (n + m/2)H<sub>2</sub> + nCO",
-energy: "H<sub>feed</sub> + H<sub>steam</sub> = H<sub>pre_reformed</sub> + ΔH<sub>pre_ref</sub> + Q<sub>loss</sub>"
-},
-4: {
-name: "메인 개질기 (Main Reformer - SMR)",
-desc: "가장 핵심이 되는 공정으로, 고온(800~900°C)에서 니켈 촉매를 이용하여 메탄과 수증기를 반응시켜 수소와 일산화탄소를 생성합니다.",
-chem: "<b>1. 개질 반응 (흡열):</b> CH<sub>4</sub> + H<sub>2</sub>O ⇌ CO + 3H<sub>2</sub> <span style='color:#3b82f6;'>(ΔH = +206 kJ/mol)</span><br><b>2. 수성가스 전이 (발열):</b> CO + H<sub>2</sub>O ⇌ CO<sub>2</sub> + H<sub>2</sub> <span style='color:#ef4444;'>(ΔH = -41 kJ/mol)</span>",
-energy: "Q<sub>combustion</sub> + H<sub>feed</sub> + H<sub>steam</sub> = H<sub>syngas</sub> + Q<sub>loss</sub>"
-},
-5: {
-name: "폐열 회수 (Heat Recovery)",
-desc: "고온의 개질 가스 및 연소 배기가스로부터 열을 회수하여 공정용 증기(Steam)를 생산하거나 원료를 예열하여 시스템 효율을 높입니다.",
-chem: "<span style='color:#64748b;'>없음 (물리적 열교환)</span>",
-energy: "ṁ<sub>syngas</sub>Δh<sub>syngas</sub> = ṁ<sub>BFW</sub>Δh<sub>steam</sub> + Q<sub>loss</sub>"
-},
-6: {
-name: "수성가스 전이 (Water Gas Shift)",
-desc: "개질 가스 내의 일산화탄소(CO)를 수증기와 한 번 더 반응시켜 수소(H₂) 생산량을 극대화하고 CO를 CO₂로 전환합니다.",
-chem: "CO + H<sub>2</sub>O ⇌ CO<sub>2</sub> + H<sub>2</sub> <span style='color:#ef4444;'>(ΔH = -41 kJ/mol)</span>",
-energy: "H<sub>in</sub> = H<sub>out</sub> + ΔH<sub>shift</sub> + Q<sub>loss</sub>"
-},
-7: {
-name: "수분 분리 (Water Separation)",
-desc: "냉각기를 거친 가스 흐름에서 응축된 액체 상태의 물(H₂O)을 분리하여 건조된 합성가스를 만듭니다.",
-chem: "H<sub>2</sub>O(g) → H<sub>2</sub>O(l) <span style='color:#64748b;'>(상변화)</span>",
-energy: "ṁ<sub>in</sub>h<sub>in</sub> = ṁ<sub>dry_gas</sub>h<sub>dry_gas</sub> + ṁ<sub>water</sub>h<sub>water</sub> + Q<sub>cooling</sub>"
-},
-8: {
-name: "공정 탄소 포집 (Process CO2 Capture)",
-desc: "아민(Amine) 등의 흡수제를 사용하여 수소 정제 전 단계의 가스에서 고농도의 이산화탄소(CO₂)를 선택적으로 포집합니다.",
-chem: "CO<sub>2</sub> + 2R-NH<sub>2</sub> ⇌ R-NH<sub>3</sub><sup>+</sup> + R-NH-COO<sup>-</sup>",
-energy: "H<sub>gas,in</sub> + H<sub>lean_sol</sub> = H<sub>gas,out</sub> + H<sub>rich_sol</sub> + Q<sub>abs</sub>"
-},
-9: {
-name: "수소 정제 (Hydrogen Purification - PSA)",
-desc: "압력순환흡착(PSA) 공정을 통해 미량의 불순물(CO, CO₂, CH₄)을 걸러내어 99.99% 이상의 고순도 수소를 생산합니다.",
-chem: "<span style='color:#64748b;'>없음 (물리적 흡착)</span>",
-energy: "ṁ<sub>feed</sub>h<sub>feed</sub> = ṁ<sub>H2</sub>h<sub>H2</sub> + ṁ<sub>tailgas</sub>h<sub>tailgas</sub>"
-},
-10: {
-name: "수소 압축 (Hydrogen Compression)",
-desc: "생산된 고순도 수소를 저장하거나 배관망으로 이송하기 위해 요구되는 압력으로 승압합니다.",
-chem: "<span style='color:#64748b;'>없음 (물리적 압축)</span>",
-energy: "ṁ<sub>H2</sub>h<sub>in</sub> + W<sub>H2_comp</sub> = ṁ<sub>H2</sub>h<sub>out</sub> + Q<sub>loss</sub>"
-},
-11: {
-name: "배기가스 포집 (Flue Gas Capture)",
-desc: "개질기 버너에서 연소 후 버려지는 배기가스(Flue Gas)에 포함된 저농도 CO₂까지 추가로 포집하여 블루 수소의 친환경성을 완성합니다.",
-chem: "CO<sub>2</sub> + Absorbent → Absorbent-CO<sub>2</sub>",
-energy: "H<sub>flue_gas,in</sub> = H<sub>flue_gas,out</sub> + ΔH<sub>capture</sub> + Q<sub>loss</sub>"
-},
-12: {
-name: "탄소 압축 (CO2 Compression)",
-desc: "포집된 모든 CO₂(공정 + 배기가스)를 지중 저장(CCS) 또는 활용(CCU)하기 위해 15 MPa 이상의 고압 초임계 상태로 압축합니다.",
-chem: "<span style='color:#64748b;'>없음 (물리적 압축)</span>",
-energy: "ṁ<sub>CO2</sub>h<sub>in</sub> + W<sub>CO2_comp</sub> = ṁ<sub>CO2</sub>h<sub>out</sub> + Q<sub>loss</sub>"
-}
-};
-
-const compNames = {
-"Ar": "Argon", "CH4": "Methane", "CH4S": "Methanethiol", "C2H6": "Ethane",
-"C3H8": "Propane", "C4H10": "Butane", "CO": "Carbon Monoxide", "CO2": "Carbon Dioxide",
-"H2": "Hydrogen", "H2O": "Water", "N2": "Nitrogen", "O2": "Oxygen", "SO2": "Sulfur Dioxide"
-};
-
-let currentMode = 'stream'; // 'stream' or 'process'
-
-document.addEventListener('DOMContentLoaded', () => {
-renderList();
-});
-
-// 탭 전환 함수
-function switchTab(mode) {
-currentMode = mode;
-
-// 버튼 스타일 변경
-document.getElementById('btn-tab-stream').classList.toggle('active', mode === 'stream');
-document.getElementById('btn-tab-process').classList.toggle('active', mode === 'process');
-
-// 뷰 전환
-document.getElementById('view-stream').style.display = mode === 'stream' ? 'block' : 'none';
-document.getElementById('view-process').style.display = mode === 'process' ? 'block' : 'none';
-
-renderList();
-}
-
-// 왼쪽 리스트 렌더링 함수
-function renderList() {
-const container = document.getElementById('list-container');
-container.innerHTML = '';
-
-if (currentMode === 'stream') {
-for (let i = 1; i <= 21; i++) {
-const btn = document.createElement('button');
-btn.className = 'item-btn';
-btn.innerText = [${i}] ${streamData[i].name};
-btn.onclick = () => updateStreamView(i, btn);
-container.appendChild(btn);
-}
-updateStreamView(13, container.children[12]); // 기본 13번 선택
-} else {
-for (let i = 1; i <= 12; i++) {
-const btn = document.createElement('button');
-btn.className = 'item-btn';
-btn.innerText = Step ${i}. ${processData[i].name.split(' (')[0]};
-btn.onclick = () => updateProcessView(i, btn);
-container.appendChild(btn);
-}
-updateProcessView(4, container.children[3]); // 기본 4번(SMR) 선택
-}
-}
-
-function formatNumber(num, decimals = 2) {
-return num.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-}
-
-// 스트림 뷰 업데이트
-function updateStreamView(id, clickedBtn) {
-document.querySelectorAll('.item-btn').forEach(b => b.classList.remove('active'));
-if(clickedBtn) clickedBtn.classList.add('active');
-
-const data = streamData[id];
-document.getElementById('stream-title').innerText = Stream ${id} : ${data.name};
-document.getElementById('val-temp').innerHTML = ${formatNumber(data.temp, 1)} <span class="prop-unit">°C</span>; document.getElementById('val-press').innerHTML = ``${formatNumber(data.press, 2)} &lt;span class="prop-unit"&gt;MPa&lt;/span>;
-document.getElementById('val-mass').innerHTML = ${formatNumber(data.mass, 0)} <span class="prop-unit">kg/hr</span>; document.getElementById('val-enth').innerHTML = ``${formatNumber(data.enth, 2)} &lt;span class="prop-unit"&gt;GJ/hr&lt;/span>;
-
-const tbody = document.getElementById('mole-table-body');
-tbody.innerHTML = '';
-for (const [formula, val] of Object.entries(data.mols)) {
-const tr = document.createElement('tr');
-let valClass = val === 0 ? 'zero-val' : (val > 0.5 ? 'highlight-val' : '');
-tr.innerHTML = &lt;td&gt;${compNames[formula]}</td>
-<td style="font-family: monospace; font-weight: bold;">${formula.replace(/(\d+)/g, '&lt;sub&gt;$1</sub>')}</td>
-<td class="${valClass}"&gt;${val.toFixed(4)}</td>
-`;
-tbody.appendChild(tr);
-}
-}
-
-// 공정 뷰 업데이트
-function updateProcessView(id, clickedBtn) {
-document.querySelectorAll('.item-btn').forEach(b => b.classList.remove('active'));
-if(clickedBtn) clickedBtn.classList.add('active');
-
-const data = processData[id];
-document.getElementById('process-title').innerText = Step${id} : ${data.name}`;
-document.getElementById('proc-desc').innerHTML = data.desc;
-document.getElementById('proc-chem').innerHTML = data.chem;
-document.getElementById('proc-energy').innerHTML = data.energy;
-}
-</script>
+    <h1>블루 수소 CCUS 통합 대시보드</h1>
+    <div class="subtitle">수소 114,156 kg/hr 생산 시뮬레이션 기반</div>
+    <div class="container">
+        <div class="sidebar">
+            <div class="tabs">
+                <button class="tab-btn active" id="tab-stream" onclick="switchTab('stream')">스트림 정보</button>
+                <button class="tab-btn" id="tab-process" onclick="switchTab('process')">공정 설명</button>
+            </div>
+            <div class="list-container" id="list-container"></div>
+        </div>
+        <div class="content">
+            <div class="card" id="view-stream">
+                <div class="card-title" id="stream-title">스트림을 선택하세요</div>
+                <div class="prop-grid">
+                    <div class="prop-item"><div class="prop-label">온도</div><div class="prop-value" id="v-temp">- <span class="prop-unit">°C</span></div></div>
+                    <div class="prop-item"><div class="prop-label">압력</div><div class="prop-value" id="v-press">- <span class="prop-unit">MPa</span></div></div>
+                    <div class="prop-item"><div class="prop-label">질량 유량</div><div class="prop-value" id="v-mass">- <span class="prop-unit">kg/hr</span></div></div>
+                    <div class="prop-item"><div class="prop-label">엔탈피 흐름</div><div class="prop-value" id="v-enth">- <span class="prop-unit">GJ/hr</span></div></div>
+                </div>
+                <h3>몰분율 (Mole Fraction)</h3>
+                <table>
+                    <thead><tr><th>Component</th><th>Formula</th><th>Fraction</th></tr></thead>
+                    <tbody id="mole-body"></tbody>
+                </table>
+            </div>
+            <div class="card" id="view-process" style="display: none;">
+                <div class="card-title" id="process-title">공정을 선택하세요</div>
+                <div class="process-info-box"><h3>📝 공정 설명</h3><p id="p-desc"></p></div>
+                <div class="process-info-box"><h3>🧪 화학 반응식</h3><p id="p-chem"></p></div>
+                <div class="process-info-box"><h3>⚡ 에너지 보존식</h3><p id="p-energy" class="equation"></p></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const sData = {
+            1: { name: "Air Intake", temp: 15.0, press: 0.10, mass: 3372375, enth: -329.08, mols: {"Ar":0.0092,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0.0003,"H2":0,"H2O":0.0099,"N2":0.7732,"O2":0.2074,"SO2":0} },
+            2: { name: "Compressed Air", temp: 24.0, press: 0.11, mass: 3372375, enth: -296.84, mols: {"Ar":0.0092,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0.0003,"H2":0,"H2O":0.0099,"N2":0.7732,"O2":0.2074,"SO2":0} },
+            3: { name: "NG Feed", temp: 15.0, press: 3.10, mass: 428103, enth: -1933.32, mols: {"Ar":0,"CH4":0.9310,"CH4S":0,"C2H6":0.0320,"C3H8":0.0070,"C4H10":0.0040,"CO":0,"CO2":0.0100,"H2":0,"H2O":0,"N2":0.0160,"O2":0,"SO2":0} },
+            4: { name: "NG to SMR", temp: 15.0, press: 3.10, mass: 362367, enth: -1636.45, mols: {"Ar":0,"CH4":0.9310,"CH4S":0,"C2H6":0.0320,"C3H8":0.0070,"C4H10":0.0040,"CO":0,"CO2":0.0100,"H2":0,"H2O":0,"N2":0.0160,"O2":0,"SO2":0} },
+            5: { name: "Desulfurized NG", temp: 370.0, press: 3.00, mass: 362361, enth: -1282.84, mols: {"Ar":0,"CH4":0.9310,"CH4S":0,"C2H6":0.0320,"C3H8":0.0070,"C4H10":0.0040,"CO":0,"CO2":0.0100,"H2":0,"H2O":0,"N2":0.0160,"O2":0,"SO2":0} },
+            6: { name: "Process Steam", temp: 399.0, press: 3.10, mass: 1004488, enth: -12811.13, mols: {"Ar":0,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0,"H2":0,"H2O":1.0000,"N2":0,"O2":0,"SO2":0} },
+            7: { name: "Pre-Reformer Exit", temp: 395.0, press: 2.90, mass: 1366849, enth: -13917.51, mols: {"Ar":0,"CH4":0.2583,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0.0001,"CO2":0.0174,"H2":0.0440,"H2O":0.6760,"N2":0.0042,"O2":0,"SO2":0} },
+            8: { name: "SMR Exit", temp: 871.0, press: 2.83, mass: 1366849, enth: -8520.76, mols: {"Ar":0,"CH4":0.0411,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0.1432,"CO2":0.0124,"H2":0.4609,"H2O":0.3393,"N2":0.0030,"O2":0,"SO2":0} },
+            9: { name: "WGS Exit", temp: 204.0, press: 2.80, mass: 1366849, enth: -11116.95, mols: {"Ar":0,"CH4":0.0411,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0.1432,"CO2":0.0124,"H2":0.4609,"H2O":0.3393,"N2":0.0030,"O2":0,"SO2":0} },
+            10: { name: "Cooled Syngas", temp: 38.0, press: 2.45, mass: 1366849, enth: -13307.00, mols: {"Ar":0,"CH4":0.0411,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0.0040,"CO2":0.1517,"H2":0.6001,"H2O":0.2000,"N2":0.0030,"O2":0,"SO2":0} },
+            11: { name: "Dry Syngas", temp: 38.0, press: 2.35, mass: 265749, enth: -691.33, mols: {"Ar":0,"CH4":0.0627,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0.0061,"CO2":0.0116,"H2":0.9150,"H2O":0,"N2":0.0046,"O2":0,"SO2":0} },
+            12: { name: "PSA H2 Exit", temp: 38.0, press: 2.28, mass: 114156, enth: 21.55, mols: {"Ar":0,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0,"H2":0.9998,"H2O":0,"N2":0.0002,"O2":0,"SO2":0} },
+            13: { name: "Product H2", temp: 30.0, press: 6.48, mass: 114156, enth: 10.40, mols: {"Ar":0,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0,"H2":0.9998,"H2O":0,"N2":0.0002,"O2":0,"SO2":0} },
+            14: { name: "PSA Tailgas", temp: 38.0, press: 0.14, mass: 151593, enth: -712.32, mols: {"Ar":0,"CH4":0.2824,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0.0274,"CO2":0.0521,"H2":0.6180,"H2O":0,"N2":0.0201,"O2":0,"SO2":0} },
+            15: { name: "Burner Fuel", temp: 15.0, press: 3.10, mass: 65731, enth: -296.84, mols: {"Ar":0,"CH4":0.9310,"CH4S":0,"C2H6":0.0320,"C3H8":0.0070,"C4H10":0.0040,"CO":0,"CO2":0.0100,"H2":0,"H2O":0,"N2":0.0160,"O2":0,"SO2":0} },
+            16: { name: "Combustion Gas", temp: 29.0, press: 0.14, mass: 217325, enth: -1009.16, mols: {"Ar":0,"CH4":0.4059,"CH4S":0,"C2H6":0.0061,"C3H8":0.0013,"C4H10":0.0008,"CO":0.0222,"CO2":0.0441,"H2":0.5003,"H2O":0,"N2":0.0193,"O2":0,"SO2":0} },
+            17: { name: "Flue Gas", temp: 121.0, press: 0.10, mass: 3589700, enth: -10210.51, mols: {"Ar":0.0082,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0.0746,"H2":0,"H2O":0.2114,"N2":0.6890,"O2":0.0167,"SO2":0} },
+            18: { name: "Captured CO2 (Proc)", temp: 30.0, press: 0.20, mass: 391942, enth: -3515.56, mols: {"Ar":0,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0.9835,"H2":0,"H2O":0.0165,"N2":0,"O2":0,"SO2":0} },
+            19: { name: "Captured CO2 (Flue)", temp: 49.0, press: 0.14, mass: 710065, enth: -6370.74, mols: {"Ar":0,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0.9728,"H2":0.0002,"H2O":0.0270,"N2":0,"O2":0,"SO2":0} },
+            20: { name: "Total CO2 Comp", temp: 30.0, press: 15.27, mass: 1091433, enth: -10035.35, mols: {"Ar":0,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0.9995,"H2":0,"H2O":0.0005,"N2":0,"O2":0,"SO2":0} },
+            21: { name: "Vent Gas", temp: 30.0, press: 0.10, mass: 2762399, enth: -1224.32, mols: {"Ar":0.0110,"CH4":0,"CH4S":0,"C2H6":0,"C3H8":0,"C4H10":0,"CO":0,"CO2":0.0100,"H2":0,"H2O":0.0358,"N2":0.9209,"O2":0.0224,"SO2":0} }
+        };
+        const pData = {
+            1: { name: "공기 압축", desc: "개질기 버너 연소용 공기를 도입하여 반응 압력으로 승압합니다.", chem: "없음 (물리적 압축)", energy: "ṁ₁h₁ + W_air = ṁ₂h₂" },
+            2: { name: "원료 탈황", desc: "천연가스 내 황 성분을 제거하여 촉매를 보호합니다.", chem: "H₂S + ZnO &rarr; ZnS + H₂O", energy: "H_in = H_out + &Delta;H_rxn" },
+            3: { name: "예비 개질", desc: "중질 탄화수소를 분해하여 탄소 침착을 방지합니다.", chem: "CnHm + nH₂O &rarr; (n+m/2)H₂ + nCO", energy: "H_in = H_out + &Delta;H_pre" },
+            4: { name: "메인 개질기(SMR)", desc: "고온에서 메탄과 수증기를 반응시켜 수소를 생산합니다.", chem: "1. CH₄ + H₂O &rightleftharpoons; CO + 3H₂ (흡열)<br>2. CO + H₂O &rightleftharpoons; CO₂ + H₂ (발열)", energy: "Q_in + H_in = H_out" },
+            5: { name: "폐열 회수", desc: "고온 가스의 열을 회수하여 증기를 생산합니다.", chem: "없음 (열교환)", energy: "ṁ&Delta;h_hot = ṁ&Delta;h_cold" },
+            6: { name: "수성가스 전이", desc: "CO를 추가로 H₂와 CO₂로 전환합니다.", chem: "CO + H₂O &rightleftharpoons; CO₂ + H₂", energy: "H_in = H_out + &Delta;H_shift" },
+            7: { name: "수분 분리", desc: "냉각된 가스에서 물을 액체로 분리합니다.", chem: "H₂O(g) &rarr; H₂O(l)", energy: "ṁh_in = ṁh_gas + ṁh_liq" },
+            8: { name: "공정 탄소포집", desc: "합성가스 내 고농도 CO₂를 흡수합니다.", chem: "CO₂ + Amine &rightleftharpoons; Complex", energy: "H_in + H_sol = H_out + H_rich" },
+            9: { name: "수소 정제(PSA)", desc: "흡착을 통해 99.99% 고순도 수소를 생산합니다.", chem: "없음 (물리적 흡착)", energy: "ṁh_in = ṁh_H2 + ṁh_tail" },
+            10: { name: "수소 압축", desc: "생산된 수소를 이송 압력으로 승압합니다.", chem: "없음 (물리적 압축)", energy: "ṁh_in + W_comp = ṁh_out" },
+            11: { name: "배기가스 포집", desc: "연소 후 배출되는 저농도 CO₂를 포집합니다.", chem: "CO₂ + Absorbent &rarr; Bound", energy: "H_flue_in = H_flue_out + &Delta;H_cap" },
+            12: { name: "탄소 압축", desc: "포집된 CO₂를 저장용 고압으로 압축합니다.", chem: "없음 (물리적 압축)", energy: "ṁh_in + W_comp = ṁh_out" }
+        };
+        const cNames = {"Ar":"Argon","CH4":"Methane","CH4S":"Methanethiol","C2H6":"Ethane","C3H8":"Propane","C4H10":"Butane","CO":"CO","CO2":"CO2","H2":"Hydrogen","H2O":"Water","N2":"Nitrogen","O2":"Oxygen","SO2":"SO2"};
+        let mode = 'stream';
+        function switchTab(m) {
+            mode = m;
+            document.getElementById('tab-stream').classList.toggle('active', m==='stream');
+            document.getElementById('tab-process').classList.toggle('active', m==='process');
+            document.getElementById('view-stream').style.display = m==='stream' ? 'block' : 'none';
+            document.getElementById('view-process').style.display = m==='process' ? 'block' : 'none';
+            render();
+        }
+        function render() {
+            const cont = document.getElementById('list-container');
+            cont.innerHTML = '';
+            if (mode === 'stream') {
+                for(let i=1; i<=21; i++) {
+                    const b = document.createElement('button');
+                    b.className = 'item-btn'; b.innerText = `[${i}] ${sData[i].name}`;
+                    b.onclick = () => showStream(i, b);
+                    cont.appendChild(b);
+                }
+                showStream(13, cont.children[12]);
+            } else {
+                for(let i=1; i<=12; i++) {
+                    const b = document.createElement('button');
+                    b.className = 'item-btn'; b.innerText = `${i}. ${pData[i].name}`;
+                    b.onclick = () => showProcess(i, b);
+                    cont.appendChild(b);
+                }
+                showProcess(4, cont.children[3]);
+            }
+        }
+        function showStream(id, b) {
+            document.querySelectorAll('.item-btn').forEach(x => x.classList.remove('active'));
+            if(b) b.classList.add('active');
+            const d = sData[id];
+            document.getElementById('stream-title').innerText = `Stream ${id} : ${d.name}`;
+            document.getElementById('v-temp').innerHTML = d.temp.toFixed(1) + ' <span class="prop-unit">°C</span>';
+            document.getElementById('v-press').innerHTML = d.press.toFixed(2) + ' <span class="prop-unit">MPa</span>';
+            document.getElementById('v-mass').innerHTML = d.mass.toLocaleString() + ' <span class="prop-unit">kg/hr</span>';
+            document.getElementById('v-enth').innerHTML = d.enth.toFixed(2) + ' <span class="prop-unit">GJ/hr</span>';
+            const body = document.getElementById('mole-body');
+            body.innerHTML = '';
+            for(let k in d.mols) {
+                const tr = document.createElement('tr');
+                const v = d.mols[k];
+                const cls = v === 0 ? 'zero-val' : (v > 0.5 ? 'highlight-val' : '');
+                tr.innerHTML = `<td>${cNames[k]}</td><td>${k.replace(/(\d+)/g, '<sub>$1</sub>')}</td><td class="${cls}">${v.toFixed(4)}</td>`;
+                body.appendChild(tr);
+            }
+        }
+        function showProcess(id, b) {
+            document.querySelectorAll('.item-btn').forEach(x => x.classList.remove('active'));
+            if(b) b.classList.add('active');
+            const d = pData[id];
+            document.getElementById('process-title').innerText = `Step ${id} : ${d.name}`;
+            document.getElementById('p-desc').innerText = d.desc;
+            document.getElementById('p-chem').innerHTML = d.chem;
+            document.getElementById('p-energy').innerText = d.energy;
+        }
+        window.onload = render;
+    </script>
 </body>
 </html>
